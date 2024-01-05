@@ -111,6 +111,19 @@
     });
 
     buttonElement.addEventListener("click", () => {
+      addComment();
+    });
+
+    document.documentElement.addEventListener('keyup', (e) => {
+      console.log(e.code);
+      if(e.code === "Enter" && userNameIsNotNull && userCommentIsNotNull && userName.value !== "" && userComment.value !== "") {
+        addComment();
+      }
+    });
+
+    console.log("It works!");
+
+    function addComment() {
       const oldCommentsList = commentsList.innerHTML;
       const currentDate = new Date();
       const dateAndTime = `${intToTwoCharString(currentDate.getDate())}.${intToTwoCharString(currentDate.getMonth() + 1)}.${intToTwoCharString(currentDate.getFullYear() % 100)} ${intToTwoCharString(currentDate.getHours())}:${intToTwoCharString(currentDate.getMinutes())}`;
@@ -156,9 +169,7 @@
       userNameIsNotNull = false;
       userCommentIsNotNull = false;
       switchButtonOff();
+    }
 
-    });
-
-    console.log("It works!");
   </script>
 </html>
