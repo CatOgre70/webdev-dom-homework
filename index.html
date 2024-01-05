@@ -67,36 +67,70 @@
 
   <script>
     "use strict";
+    // Код писать здесь
 
     const intToTwoCharString = (a) => {
       return a < 10 ? `0${a}` : String(a);
     }
 
-    // Код писать здесь
     const buttonElement = document.getElementById("add-button");
     const commentsList = document.getElementById("comments-list");
     const userName = document.getElementById("user-name");
     const userComment = document.getElementById("user-comment");
+    let userNameIsNotNull = false;
+    let userCommentIsNotNull = false;
+
+    const switchButtonOn = () => {
+      buttonElement.removeAttribute("disabled");
+      buttonElement.backgroundColor = "#bcec30";
+    }
+
+    const switchButtonOff = () => {
+      buttonElement.setAttribute("disabled", "");
+      buttonElement.backgroundColor = "#555";
+    }
+
+    switchButtonOff();
+
+    userName.addEventListener("input", () => {
+      userNameIsNotNull = userName.value !== "";
+      if(userNameIsNotNull && userCommentIsNotNull) {
+        switchButtonOn();
+      } else {
+        switchButtonOff();
+      }
+    });
+
+    userComment.addEventListener("input", () => {
+      userCommentIsNotNull = userComment.value !== "";
+      if(userNameIsNotNull && userCommentIsNotNull) {
+        switchButtonOn();
+      } else {
+        switchButtonOff();
+      }
+    });
 
     buttonElement.addEventListener("click", () => {
       const oldCommentsList = commentsList.innerHTML;
       const currentDate = new Date();
       const dateAndTime = `${intToTwoCharString(currentDate.getDate())}.${intToTwoCharString(currentDate.getMonth() + 1)}.${intToTwoCharString(currentDate.getFullYear() % 100)} ${intToTwoCharString(currentDate.getHours())}:${intToTwoCharString(currentDate.getMinutes())}`;
       const likesCounter = 0;
-      let noUserInput = false;
-      userName.style.backgroundColor = 'white';
-      userComment.style.backgroundColor = 'white';
-      if(userName.value === '') {
-        noUserInput = true;
-        userName.style.backgroundColor = 'red';
-      }
-      if(userComment.value === '') {
-        noUserInput = true;
-        userComment.style.backgroundColor = 'red';
-      }
-      if(noUserInput) {
-        return;
-      }
+
+      // Old code with red background colors for input fields
+      // let noUserInput = false;
+      // userName.style.backgroundColor = 'white';
+      // userComment.style.backgroundColor = 'white';
+      // if(userName.value === '') {
+      //   noUserInput = true;
+      //   userName.style.backgroundColor = 'red';
+      // }
+      // if(userComment.value === '') {
+      //   noUserInput = true;
+      //   userComment.style.backgroundColor = 'red';
+      // }
+      // if(noUserInput) {
+      //   return;
+      // }
 
       commentsList.innerHTML =
               `${oldCommentsList}<li class="comment">
@@ -119,6 +153,9 @@
 
       userName.value = '';
       userComment.value = '';
+      userNameIsNotNull = false;
+      userCommentIsNotNull = false;
+      switchButtonOff();
 
     });
 
