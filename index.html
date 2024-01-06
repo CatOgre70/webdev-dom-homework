@@ -44,7 +44,7 @@
           </div>
         </li>
       </ul>
-      <div class="add-form">
+      <div class="add-form" id="input-form">
         <input
           type="text"
           class="add-form-name"
@@ -75,6 +75,7 @@
 
     const buttonElement = document.getElementById("add-button");
     const commentsList = document.getElementById("comments-list");
+    const inputForm = document.getElementById("input-form")
     const userName = document.getElementById("user-name");
     const userComment = document.getElementById("user-comment");
     let userNameIsNotNull = false;
@@ -93,6 +94,15 @@
     switchButtonOff();
 
     userName.addEventListener("input", () => {
+      // Enter key processing (deleting from the string)
+      const charArray = userName.value.split("");
+      if(charArray[charArray.length-1] === "\n") {
+        charArray.pop();
+        if(charArray[charArray.length-1] === "\r") {
+          charArray.pop()
+        }
+        userName.value = charArray.join("");
+      }
       userNameIsNotNull = userName.value !== "";
       if(userNameIsNotNull && userCommentIsNotNull) {
         switchButtonOn();
@@ -102,6 +112,15 @@
     });
 
     userComment.addEventListener("input", () => {
+      // Enter key processing (deleting from the string)
+      const charArray = userComment.value.split("");
+      if(charArray[charArray.length-1] === "\n") {
+        charArray.pop();
+        if(charArray[charArray.length-1] === "\r") {
+          charArray.pop()
+        }
+        userComment.value = charArray.join("");
+      }
       userCommentIsNotNull = userComment.value !== "";
       if(userNameIsNotNull && userCommentIsNotNull) {
         switchButtonOn();
@@ -114,8 +133,8 @@
       addComment();
     });
 
-    document.documentElement.addEventListener('keyup', (e) => {
-      console.log(e.code);
+    inputForm.addEventListener('keyup', (e) => {
+      // console.log(e.code);
       if(e.code === "Enter" && userNameIsNotNull && userCommentIsNotNull && userName.value !== "" && userComment.value !== "") {
         addComment();
       }
