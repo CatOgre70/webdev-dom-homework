@@ -59,6 +59,7 @@
           rows="4"
         ></textarea>
         <div class="add-form-row">
+          <button class="delete-form-button" id="delete-last-button">Удалить последний комментарий</button>
           <button class="add-form-button" id="add-button">Написать</button>
         </div>
       </div>
@@ -74,6 +75,7 @@
     }
 
     const buttonElement = document.getElementById("add-button");
+    const deleteLastButtonElement = document.getElementById("delete-last-button");
     const commentsList = document.getElementById("comments-list");
     const inputForm = document.getElementById("input-form")
     const userName = document.getElementById("user-name");
@@ -89,6 +91,16 @@
     const switchButtonOff = () => {
       buttonElement.setAttribute("disabled", "");
       buttonElement.backgroundColor = "#555";
+    }
+
+    const switchDeleteButtonOn = () => {
+      deleteLastButtonElement.removeAttribute("disabled");
+      deleteLastButtonElement.backgroundColor = "#bcec30";
+    }
+
+    const switchDeleteButtonOff = () => {
+      deleteLastButtonElement.setAttribute("disabled", "");
+      deleteLastButtonElement.backgroundColor = "#555";
     }
 
     switchButtonOff();
@@ -134,9 +146,18 @@
     });
 
     inputForm.addEventListener('keyup', (e) => {
-      // console.log(e.code);
       if(e.code === "Enter" && userNameIsNotNull && userCommentIsNotNull && userName.value !== "" && userComment.value !== "") {
         addComment();
+      }
+    });
+
+    deleteLastButtonElement.addEventListener('click', () => {
+      if(commentsList.childElementCount > 1) {
+        console.log(commentsList.children.item(commentsList.childElementCount-1));
+        commentsList.removeChild(commentsList.children.item(commentsList.childElementCount-1));
+      } else if(commentsList.childElementCount === 1) {
+        commentsList.removeChild(commentsList.children.item(0));
+        switchDeleteButtonOff();
       }
     });
 
@@ -188,6 +209,9 @@
       userNameIsNotNull = false;
       userCommentIsNotNull = false;
       switchButtonOff();
+      if(commentsList.childElementCount === 1) {
+        switchDeleteButtonOn();
+      }
     }
 
   </script>
