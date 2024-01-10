@@ -194,8 +194,16 @@
       const likesCounter = 0;
 
       commentsArray.push({
-        name: userName.value,
-        comment: userComment.value,
+        name: userName.value
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;"),
+        comment: userComment.value
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;"),
         date: dateAndTime,
         likes: likesCounter,
         myLike: false
