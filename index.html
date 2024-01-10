@@ -42,13 +42,15 @@
         name: "Глеб Фокин",
         comment: "Это будет первый комментарий на этой странице",
         date: "12.02.22 12:18",
-        likes: 3
+        likes: 3,
+        myLike: false
       },
       {
         name: "Варвара Н.",
         comment: "Мне нравится как оформлена эта страница! ❤",
         date: "13.02.22 19:22",
-        likes: 75
+        likes: 75,
+        myLike: false
       }
     ];
 
@@ -65,8 +67,23 @@
     let userNameIsNotNull = false;
     let userCommentIsNotNull = false;
 
+    const initLikeButtonListeners = () => {
+      const likeButtonsList = document.querySelectorAll(".like-button");
+      for(const likeButton of likeButtonsList) {
+        likeButton.addEventListener('click', () => {
+          if(commentsArray[likeButton.dataset.index].myLike) {
+            commentsArray[likeButton.dataset.index].myLike = false;
+            commentsArray[likeButton.dataset.index].likes--;
+          } else {
+            commentsArray[likeButton.dataset.index].myLike = true;
+            commentsArray[likeButton.dataset.index].likes++;
+          }
+          renderCommentList();
+        });
+      }
+    };
     const renderCommentList = () => {
-      commentsList.innerHTML = commentsArray.map((comment) => {
+      commentsList.innerHTML = commentsArray.map((comment, index) => {
         return `<li class="comment">
                   <div class="comment-header">
                     <div>${comment.name}</div>
@@ -80,14 +97,16 @@
                   <div class="comment-footer">
                     <div class="likes">
                       <span class="likes-counter">${comment.likes}</span>
-                      <button class="like-button ${comment.likes > 0 ? "-active-like" : ""}"></button>
+                      <button class="like-button ${comment.myLike ? "-active-like" : ""}" data-index="${index}"></button>
                     </div>
                   </div>
                 </li>`;
       }).join("");
+      initLikeButtonListeners();
     };
 
     renderCommentList();
+
 
     const switchButtonOn = () => {
       buttonElement.removeAttribute("disabled");
@@ -178,7 +197,8 @@
         name: userName.value,
         comment: userComment.value,
         date: dateAndTime,
-        likes: likesCounter
+        likes: likesCounter,
+        myLike: false
       });
 
       renderCommentList();
