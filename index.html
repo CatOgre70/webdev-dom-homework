@@ -91,7 +91,7 @@
           const previousCommentUserName = `AUTHOR_BEGIN${commentsArray[comment.dataset.index].name}AUTHOR_END`;
           const previousCommentText = commentsArray[comment.dataset.index].comment;
           userName.value = "";
-          userComment.value = `QUOTE_BEGIN${previousCommentUserName}\n${previousCommentText}QUOTE_END`;
+          userComment.value = `QUOTE_BEGIN${previousCommentUserName}\n${previousCommentText}QUOTE_END\n`;
         });
       }
     }
