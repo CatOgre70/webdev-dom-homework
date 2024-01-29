@@ -70,7 +70,8 @@
     const initLikeButtonListeners = () => {
       const likeButtonsList = document.querySelectorAll(".like-button");
       for(const likeButton of likeButtonsList) {
-        likeButton.addEventListener('click', () => {
+        likeButton.addEventListener('click', (event) => {
+          event.stopPropagation();
           if(commentsArray[likeButton.dataset.index].myLike) {
             commentsArray[likeButton.dataset.index].myLike = false;
             commentsArray[likeButton.dataset.index].likes--;
@@ -82,9 +83,26 @@
         });
       }
     };
+
+    const initCommentOnCommentListeners = () => {
+      const commentsList = document.querySelectorAll(".comment");
+      for (const comment of commentsList) {
+        comment.addEventListener('click', (event) => {
+          const previousCommentUserName = `AUTHOR_BEGIN${commentsArray[comment.dataset.index].name}AUTHOR_END`;
+          const previousCommentText = commentsArray[comment.dataset.index].comment;
+          userName.value = "";
+          userComment.value = `QUOTE_BEGIN${previousCommentUserName}\n${previousCommentText}QUOTE_END`;
+        });
+      }
+    }
+
     const renderCommentList = () => {
       commentsList.innerHTML = commentsArray.map((comment, index) => {
-        return `<li class="comment">
+        comment.comment = comment.comment.replaceAll("QUOTE_BEGIN", "<div class = 'quote'>");
+        comment.comment = comment.comment.replaceAll("QUOTE_END", "</div>")
+        comment.comment = comment.comment.replaceAll("AUTHOR_BEGIN", "<b>");
+        comment.comment = comment.comment.replaceAll("AUTHOR_END", "</b><br>")
+        return `<li class="comment" data-index="${index}">
                   <div class="comment-header">
                     <div>${comment.name}</div>
                     <div>${comment.date}</div>
@@ -103,6 +121,7 @@
                 </li>`;
       }).join("");
       initLikeButtonListeners();
+      initCommentOnCommentListeners();
     };
 
     renderCommentList();
