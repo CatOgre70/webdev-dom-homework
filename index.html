@@ -96,7 +96,7 @@
       }
     }
 
-    const renderCommentList = () => {
+    function renderCommentList() {
       commentsList.innerHTML = commentsArray.map((comment, index) => {
         comment.comment = comment.comment.replaceAll("QUOTE_BEGIN", "<div class = 'quote'>");
         comment.comment = comment.comment.replaceAll("QUOTE_END", "</div>")
@@ -122,7 +122,7 @@
       }).join("");
       initLikeButtonListeners();
       initCommentOnCommentListeners();
-    };
+    }
 
     renderCommentList();
 
