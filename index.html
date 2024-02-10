@@ -87,7 +87,7 @@
     const initCommentOnCommentListeners = () => {
       const commentsList = document.querySelectorAll(".comment");
       for (const comment of commentsList) {
-        comment.addEventListener('click', (event) => {
+        comment.addEventListener('click', () => {
           const previousCommentUserName = `AUTHOR_BEGIN${commentsArray[comment.dataset.index].name}AUTHOR_END`;
           const previousCommentText = commentsArray[comment.dataset.index].comment;
           userName.value = "";
