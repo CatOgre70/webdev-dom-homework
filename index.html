@@ -208,21 +208,12 @@
     console.log("It works!");
 
     function addComment() {
-      const currentDate = new Date();
-      const dateAndTime = `${intToTwoCharString(currentDate.getDate())}.${intToTwoCharString(currentDate.getMonth() + 1)}.${intToTwoCharString(currentDate.getFullYear() % 100)} ${intToTwoCharString(currentDate.getHours())}:${intToTwoCharString(currentDate.getMinutes())}`;
+      const dateAndTime = currentDateToString();
       const likesCounter = 0;
 
       commentsArray.push({
-        name: userName.value
-                .replaceAll("&", "&amp;")
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;")
-                .replaceAll('"', "&quot;"),
-        comment: userComment.value
-                .replaceAll("&", "&amp;")
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;")
-                .replaceAll('"', "&quot;"),
+        name: validateString(userName.value),
+        comment: validateString(userComment.value),
         date: dateAndTime,
         likes: likesCounter,
         myLike: false
@@ -239,5 +230,14 @@
         switchDeleteButtonOn();
       }
     }
+    function currentDateToString(){
+      const currentDate = new Date();
+      return `${intToTwoCharString(currentDate.getDate())}.${intToTwoCharString(currentDate.getMonth() + 1)}.${intToTwoCharString(currentDate.getFullYear() % 100)} ${intToTwoCharString(currentDate.getHours())}:${intToTwoCharString(currentDate.getMinutes())}`;
+    }
+
+    function validateString(str) {
+      return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+    }
+
   </script>
 </html>
