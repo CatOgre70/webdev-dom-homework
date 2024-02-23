@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b25da61f-c087-4224-aca6-9aa3fb68ef9a" name="Changes" comment="Comment on comment works, but comment on comment on comment works not so good" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="main" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="2ZxHGAVJoVy2Z1JYJNzF7rNZV32" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JavaScript Debug.index.html.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;hw-11&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/vasilydemin/Yandex.Disk.localized/WebStorm projects/webdev-dom-homework&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b25da61f-c087-4224-aca6-9aa3fb68ef9a" name="Changes" comment="" />
+      <created>1703356711836</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1703356711836</updated>
+      <workItem from="1703356712876" duration="563000" />
+      <workItem from="1704355078662" duration="1345000" />
+      <workItem from="1704439804798" duration="6457000" />
+      <workItem from="1704476985265" duration="6063000" />
+      <workItem from="1704555070413" duration="16354000" />
+      <workItem from="1704863435863" duration="898000" />
+      <workItem from="1704864342909" duration="561000" />
+      <workItem from="1706548468827" duration="6053000" />
+      <workItem from="1706875185217" duration="446000" />
+      <workItem from="1707577551363" duration="1219000" />
+      <workItem from="1707579799178" duration="677000" />
+    </task>
+    <task id="LOCAL-00001" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1703357137565</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1703357137566</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Well, form to add user comments  works as expected">
+      <option name="closed" value="true" />
+      <created>1704445863099</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1704445863099</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Publish comment button enabled/disabled when user input information in both fields">
+      <option name="closed" value="true" />
+      <created>1704480425595</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1704480425595</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Enter button listener added to whole html page">
+      <option name="closed" value="true" />
+      <created>1704482030903</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1704482030903</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Enter button listener added to whole html page">
+      <option name="closed" value="true" />
+      <created>1704482052553</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1704482052553</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Enter button listener added to whole html page and processing Enter key press">
+      <option name="closed" value="true" />
+      <created>1704556198593</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1704556198593</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Button 'Remove last comment added with right switching it on and off'">
+      <option name="closed" value="true" />
+      <created>1704620990758</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1704620990758</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Start of Home Work 10 :(">
+      <option name="closed" value="true" />
+      <created>1704637917460</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1704637917460</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Start of Home Work 10 :(">
+      <option name="closed" value="true" />
+      <created>1704641831344</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1704641831344</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Start of Homework 11: add user input clean for security purposes">
+      <option name="closed" value="true" />
+      <created>1704864761918</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1704864761918</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Start of Homework 11: add user input clean for security purposes">
+      <option name="closed" value="true" />
+      <created>1706554596955</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1706554596955</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Start of Homework 11: add user input clean for security purposes">
+      <option name="closed" value="true" />
+      <created>1706554855464</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1706554855464</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Comment on comment works, but comment on comment on comment works not so good">
+      <option name="closed" value="true" />
+      <created>1707578152204</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1707578152204</updated>
+    </task>
+    <task id="LOCAL-00014" summary="Comment on comment works, but comment on comment on comment works not so good">
+      <option name="closed" value="true" />
+      <created>1707579848578</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1707579848578</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Initial commit" />
+    <MESSAGE value="Well, form to add user comments  works as expected" />
+    <MESSAGE value="Publish comment button enabled/disabled when user input information in both fields" />
+    <MESSAGE value="Enter button listener added to whole html page" />
+    <MESSAGE value="Enter button listener added to whole html page and processing Enter key press" />
+    <MESSAGE value="Button 'Remove last comment added with right switching it on and off'" />
+    <MESSAGE value="Start of Home Work 10 :(" />
+    <MESSAGE value="Start of Homework 11: add user input clean for security purposes" />
+    <MESSAGE value="Comment on comment works, but comment on comment on comment works not so good" />
+    <option name="LAST_COMMIT_MESSAGE" value="Comment on comment works, but comment on comment on comment works not so good" />
+  </component>
+</project>

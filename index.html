@@ -37,22 +37,22 @@
     "use strict";
     // Код писать здесь
 
-    const commentsArray = [
-      {
-        name: "Глеб Фокин",
-        comment: "Это будет первый комментарий на этой странице",
-        date: "12.02.22 12:18",
-        likes: 3,
-        myLike: false
-      },
-      {
-        name: "Варвара Н.",
-        comment: "Мне нравится как оформлена эта страница! ❤",
-        date: "13.02.22 19:22",
-        likes: 75,
-        myLike: false
-      }
-    ];
+    // Список комментариев возвращается из API в следующем виде:
+    // {
+    // "comments": [
+    //    {
+    //      "id": 1,
+    //      "date": "2023-03-10T10:11:23.237Z",
+    //      "likes": 0,
+    //      "isLiked": false,
+    //      "text": "Это мой первый лайк",
+    //      "author": { "name": "Глеб Фокин" }
+    //    }
+    //  ]
+    // }
+
+    let commentsArray = [];
+    readCommentsArray();
 
     const intToTwoCharString = (a) => {
       return a < 10 ? `0${a}` : String(a);
@@ -98,24 +98,24 @@
 
     function renderCommentList() {
       commentsList.innerHTML = commentsArray.map((comment, index) => {
-        comment.comment = comment.comment.replaceAll("QUOTE_BEGIN", "<div class = 'quote'>");
-        comment.comment = comment.comment.replaceAll("QUOTE_END", "</div>")
-        comment.comment = comment.comment.replaceAll("AUTHOR_BEGIN", "<b>");
-        comment.comment = comment.comment.replaceAll("AUTHOR_END", "</b><br>")
+        comment.text = comment.text.replaceAll("QUOTE_BEGIN", "<div class = 'quote'>");
+        comment.text = comment.text.replaceAll("QUOTE_END", "</div>")
+        comment.text = comment.text.replaceAll("AUTHOR_BEGIN", "<b>");
+        comment.text = comment.text.replaceAll("AUTHOR_END", "</b><br>")
         return `<li class="comment" data-index="${index}">
                   <div class="comment-header">
-                    <div>${comment.name}</div>
-                    <div>${comment.date}</div>
+                    <div>${comment.author.name}</div>
+                    <div>${dateToString(comment.date)}</div>
                   </div>
                   <div class="comment-body">
                     <div class="comment-text">
-                      ${comment.comment}
+                      ${comment.text}
                     </div>
                   </div>
                   <div class="comment-footer">
                     <div class="likes">
                       <span class="likes-counter">${comment.likes}</span>
-                      <button class="like-button ${comment.myLike ? "-active-like" : ""}" data-index="${index}"></button>
+                      <button class="like-button ${comment.isLiked ? "-active-like" : ""}" data-index="${index}"></button>
                     </div>
                   </div>
                 </li>`;
@@ -208,18 +208,19 @@
     console.log("It works!");
 
     function addComment() {
-      const dateAndTime = currentDateToString();
-      const likesCounter = 0;
+      const newComment = {
+        text: validateString(userComment.value),
+        name: validateString(userName.value)
+      };
 
-      commentsArray.push({
-        name: validateString(userName.value),
-        comment: validateString(userComment.value),
-        date: dateAndTime,
-        likes: likesCounter,
-        myLike: false
+      fetch("https://wedev-api.sky.pro/api/v1/vasily-demin/comments", {
+        method: "POST",
+        body: JSON.stringify(newComment)
+      }).then((response) => {
+        response.json().then(() => {
+          readCommentsArray();
+        });
       });
-
-      renderCommentList();
 
       userName.value = '';
       userComment.value = '';
@@ -235,8 +236,24 @@
       return `${intToTwoCharString(currentDate.getDate())}.${intToTwoCharString(currentDate.getMonth() + 1)}.${intToTwoCharString(currentDate.getFullYear() % 100)} ${intToTwoCharString(currentDate.getHours())}:${intToTwoCharString(currentDate.getMinutes())}`;
     }
 
+    function dateToString(dateString) {
+      const date = new Date(Date.parse(dateString));
+      return `${intToTwoCharString(date.getDate())}.${intToTwoCharString(date.getMonth() + 1)}.${intToTwoCharString(date.getFullYear() % 100)} ${intToTwoCharString(date.getHours())}:${intToTwoCharString(date.getMinutes())}`;
+    }
+
     function validateString(str) {
       return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+    }
+
+    function readCommentsArray() {
+      fetch("https://wedev-api.sky.pro/api/v1/vasily-demin/comments", {
+        method: "GET"
+      }).then((response) => {
+        response.json().then((responseData) => {
+          commentsArray = responseData.comments;
+          renderCommentList();
+        });
+      });
     }
 
   </script>
