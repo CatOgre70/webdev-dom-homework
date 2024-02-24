@@ -1,39 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <title>Проект "Комменты"</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="styles.css"/>
+</head>
 
-  <body>
-    <div class="container">
-      <ul class="comments" id="comments-list">
-<!--        Список рендерится из JS-->
-      </ul>
-      <div class="add-form" id="input-form">
-        <input
-          type="text"
-          class="add-form-name"
-          id="user-name"
-          placeholder="Введите ваше имя"
-        />
-        <textarea
-          type="textarea"
-          class="add-form-text"
-          id="user-comment"
-          placeholder="Введите ваш коментарий"
-          rows="4"
-        ></textarea>
+<body>
+<div class="container">
+    <ul class="comments" id="comments-list">
+        <!--        Список рендерится из JS-->
+    </ul>
+    <div class="add-form" id="input-form">
+        <input type="text" class="add-form-name" id="user-name" placeholder="Введите ваше имя"/>
+        <textarea type="textarea" class="add-form-text" id="user-comment" placeholder="Введите ваш коментарий" rows="4"></textarea>
         <div class="add-form-row">
-          <button class="delete-form-button" id="delete-last-button">Удалить последний комментарий</button>
-          <button class="add-form-button" id="add-button">Написать</button>
+            <button class="delete-form-button" id="delete-last-button">Удалить последний комментарий</button>
+            <button class="add-form-button" id="add-button">Написать</button>
         </div>
-      </div>
     </div>
-  </body>
-
-  <script>
+    <div class="add-form" id="adding-comment-progress">
+        <div class="comment-text">Комментарий добавляется...</div>
+    </div>
+</div>
+</body>
+<script>
     "use strict";
     // Код писать здесь
 
@@ -54,218 +45,228 @@
     const buttonElement = document.getElementById("add-button");
     const deleteLastButtonElement = document.getElementById("delete-last-button");
     const commentsList = document.getElementById("comments-list");
-    const inputForm = document.getElementById("input-form")
+    const inputForm = document.getElementById("input-form");
+    const progressBar = document.getElementById("adding-comment-progress");
     const userName = document.getElementById("user-name");
     const userComment = document.getElementById("user-comment");
     let userNameIsNotNull = false;
     let userCommentIsNotNull = false;
-
     let commentsArray = [];
     let firstCommentListFetchAndRender = true;
-    let addingNewComment = false;
+
     fetchAndRenderCommentList();
-
+    let addingNewComment = false;
+    renderInputForm();
+    addAllEventListenersOnInputForm();
     switchButtonOff();
-
-    userName.addEventListener("input", () => {
-      // Enter key processing (deleting from the string)
-      const charArray = userName.value.split("");
-      if(charArray[charArray.length-1] === "\n") {
-        charArray.pop();
-        if(charArray[charArray.length-1] === "\r") {
-          charArray.pop()
-        }
-        userName.value = charArray.join("");
-      }
-      userNameIsNotNull = userName.value !== "";
-      if(userNameIsNotNull && userCommentIsNotNull) {
-        switchButtonOn();
-      } else {
-        switchButtonOff();
-      }
-    });
-
-    userComment.addEventListener("input", () => {
-      // Enter key processing (deleting from the string)
-      const charArray = userComment.value.split("");
-      if(charArray[charArray.length-1] === "\n") {
-        charArray.pop();
-        if(charArray[charArray.length-1] === "\r") {
-          charArray.pop()
-        }
-        userComment.value = charArray.join("");
-      }
-      userCommentIsNotNull = userComment.value !== "";
-      if(userNameIsNotNull && userCommentIsNotNull) {
-        switchButtonOn();
-      } else {
-        switchButtonOff();
-      }
-    });
-
-    buttonElement.addEventListener("click", () => {
-      addComment();
-    });
-
-    inputForm.addEventListener('keyup', (e) => {
-      if(e.code === "Enter" && userNameIsNotNull && userCommentIsNotNull && userName.value !== "" && userComment.value !== "") {
-        addComment();
-      }
-    });
-
-    deleteLastButtonElement.addEventListener('click', () => {
-      if(commentsArray.length > 1) {
-        commentsArray.pop();
-      } else if(commentsArray.length === 1) {
-        commentsArray.pop();
-        switchDeleteButtonOff();
-      }
-      renderCommentList()
-    });
 
     console.log("It works!");
 
     function addComment() {
-      const newComment = {
-        text: validateString(userComment.value),
-        name: validateString(userName.value)
-      };
-
-      fetch("https://wedev-api.sky.pro/api/v1/vasily-demin/comments", {
-        method: "POST",
-        body: JSON.stringify(newComment)
-      }).then((response) => {
-        return response.json();
-      }).then(() => {
+        const newComment = {
+            text: validateString(userComment.value),
+            name: validateString(userName.value)
+        };
         addingNewComment = true;
-        fetchAndRenderCommentList();
-      });
+        renderInputForm();
+        fetch("https://wedev-api.sky.pro/api/v1/vasily-demin/comments", {
+            method: "POST",
+            body: JSON.stringify(newComment)
+        }).then((response) => {
+            return response.json();
+        }).then(() => {
+            return fetchAndRenderCommentList();
+        }).then(() => {
+            addingNewComment = false;
+            renderInputForm();
+            userName.value = '';
+            userComment.value = '';
+            userNameIsNotNull = false;
+            userCommentIsNotNull = false;
+            switchButtonOff();
+            if (commentsList.childElementCount === 1) {
+                switchDeleteButtonOn();
+            }
+        });
 
-      userName.value = '';
-      userComment.value = '';
-      userNameIsNotNull = false;
-      userCommentIsNotNull = false;
-      switchButtonOff();
-      if(commentsList.childElementCount === 1) {
-        switchDeleteButtonOn();
-      }
     }
 
     function dateToString(dateString) {
-      const date = new Date(Date.parse(dateString));
-      return `${intToTwoCharString(date.getDate())}.${intToTwoCharString(date.getMonth() + 1)}.${intToTwoCharString(date.getFullYear() % 100)} ${intToTwoCharString(date.getHours())}:${intToTwoCharString(date.getMinutes())}`;
+        const date = new Date(Date.parse(dateString));
+        return `${intToTwoCharString(date.getDate())}.${intToTwoCharString(date.getMonth() + 1)}.${intToTwoCharString(date.getFullYear() % 100)} ${intToTwoCharString(date.getHours())}:${intToTwoCharString(date.getMinutes())}`;
     }
 
     function validateString(str) {
-      return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+        return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
     }
 
     function fetchAndRenderCommentList() {
-      let inputFormInnerHTMLOld = inputForm.innerHTML;
-      if(firstCommentListFetchAndRender) {
-        commentsList.innerHTML = '<li class="comment"><div class="comment-body"><div class="comment-text">Идет загрузка комментариев...</div></div></li>';
-      }
-      if(addingNewComment) {
-        inputForm.innerHTML = '<div class="add-form"><div class="comment-text">Идет публикация комментария...</div></div>'
-      }
-      return fetch("https://wedev-api.sky.pro/api/v1/vasily-demin/comments", {
-        method: "GET"
-      }).then((response) => {
-        return response.json();
-      }).then((responseData) => {
-        commentsArray = responseData.comments;
-        renderCommentList();
-      }).then(() => {
-        if(firstCommentListFetchAndRender) {
-          firstCommentListFetchAndRender = false;
+
+        if (firstCommentListFetchAndRender) {
+            commentsList.innerHTML = '<li class="comment"><div class="comment-body"><div class="comment-text">Идет загрузка комментариев...</div></div></li>';
         }
-        if(addingNewComment) {
-          inputForm.innerHTML = inputFormInnerHTMLOld;
-          addingNewComment = false;
-        }
-      });
+        return fetch("https://wedev-api.sky.pro/api/v1/vasily-demin/comments", {
+            method: "GET"
+        }).then((response) => {
+            return response.json();
+        }).then((responseData) => {
+            commentsArray = responseData.comments;
+            renderCommentList();
+            if (firstCommentListFetchAndRender) {
+                firstCommentListFetchAndRender = false;
+            }
+        });
+
     }
 
     function renderCommentList() {
-      commentsList.innerHTML = commentsArray.map((comment, index) => {
-        comment.text = comment.text.replaceAll("QUOTE_BEGIN", "<div class = 'quote'>");
-        comment.text = comment.text.replaceAll("QUOTE_END", "</div>")
-        comment.text = comment.text.replaceAll("AUTHOR_BEGIN", "<b>");
-        comment.text = comment.text.replaceAll("AUTHOR_END", "</b><br>")
-        return `<li class="comment" data-index="${index}">
-                  <div class="comment-header">
-                    <div>${comment.author.name}</div>
-                    <div>${dateToString(comment.date)}</div>
+        commentsList.innerHTML = commentsArray.map((comment, index) => {
+            comment.text = comment.text.replaceAll("QUOTE_BEGIN", "<div class = 'quote'>");
+            comment.text = comment.text.replaceAll("QUOTE_END", "</div>")
+            comment.text = comment.text.replaceAll("AUTHOR_BEGIN", "<b>");
+            comment.text = comment.text.replaceAll("AUTHOR_END", "</b><br>")
+            return `<li class="comment" data-index="${index}">
+                <div class="comment-header">
+                  <div>${comment.author.name}</div>
+                  <div>${dateToString(comment.date)}</div>
+                </div>
+                <div class="comment-body">
+                  <div class="comment-text">
+                    ${comment.text}
                   </div>
-                  <div class="comment-body">
-                    <div class="comment-text">
-                      ${comment.text}
-                    </div>
+                </div>
+                <div class="comment-footer">
+                  <div class="likes">
+                    <span class="likes-counter">${comment.likes}</span>
+                    <button class="like-button ${comment.isLiked ? "-active-like" : ""}" data-index="${index}"></button>
                   </div>
-                  <div class="comment-footer">
-                    <div class="likes">
-                      <span class="likes-counter">${comment.likes}</span>
-                      <button class="like-button ${comment.isLiked ? "-active-like" : ""}" data-index="${index}"></button>
-                    </div>
-                  </div>
-                </li>`;
-      }).join("");
-      initLikeButtonListeners();
-      initCommentOnCommentListeners();
+                </div>
+              </li>`;
+        }).join("");
+        initLikeButtonListeners();
+        initCommentOnCommentListeners();
+    }
+
+    function renderInputForm() {
+        if (addingNewComment) {
+            inputForm.style.display = "none";
+            progressBar.style.display = "flex";
+        } else {
+            inputForm.style.display = "flex";
+            progressBar.style.display = "none";
+        }
     }
 
     function intToTwoCharString(a) {
-      return a < 10 ? `0${a}` : String(a);
+        return a < 10 ? `0${a}` : String(a);
     }
 
     function initLikeButtonListeners() {
-      const likeButtonsList = document.querySelectorAll(".like-button");
-      for(const likeButton of likeButtonsList) {
-        likeButton.addEventListener('click', (event) => {
-          event.stopPropagation();
-          if(commentsArray[likeButton.dataset.index].isLiked) {
-            commentsArray[likeButton.dataset.index].isLiked = false;
-            commentsArray[likeButton.dataset.index].likes--;
-          } else {
-            commentsArray[likeButton.dataset.index].myLike = true;
-            commentsArray[likeButton.dataset.index].likes++;
-          }
-          renderCommentList();
-        });
-      }
+        const likeButtonsList = document.querySelectorAll(".like-button");
+        for (const likeButton of likeButtonsList) {
+            likeButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                if (commentsArray[likeButton.dataset.index].isLiked) {
+                    commentsArray[likeButton.dataset.index].isLiked = false;
+                    commentsArray[likeButton.dataset.index].likes--;
+                } else {
+                    commentsArray[likeButton.dataset.index].myLike = true;
+                    commentsArray[likeButton.dataset.index].likes++;
+                }
+                renderCommentList();
+            });
+        }
     }
 
     function initCommentOnCommentListeners() {
-      const commentsList = document.querySelectorAll(".comment");
-      for (const comment of commentsList) {
-        comment.addEventListener('click', () => {
-          const previousCommentUserName = `AUTHOR_BEGIN${commentsArray[comment.dataset.index].name}AUTHOR_END`;
-          const previousCommentText = commentsArray[comment.dataset.index].text;
-          userName.value = "";
-          userComment.value = `QUOTE_BEGIN${previousCommentUserName}\n${previousCommentText}QUOTE_END\n`;
-        });
-      }
+        const commentsList = document.querySelectorAll(".comment");
+        for (const comment of commentsList) {
+            comment.addEventListener('click', () => {
+                const previousCommentUserName = `AUTHOR_BEGIN${commentsArray[comment.dataset.index].name}AUTHOR_END`;
+                const previousCommentText = commentsArray[comment.dataset.index].text;
+                userName.value = "";
+                userComment.value = `QUOTE_BEGIN${previousCommentUserName}\n${previousCommentText}QUOTE_END\n`;
+            });
+        }
     }
 
     function switchButtonOn() {
-      buttonElement.removeAttribute("disabled");
-      buttonElement.backgroundColor = "#bcec30";
+        buttonElement.removeAttribute("disabled");
+        buttonElement.backgroundColor = "#bcec30";
     }
 
     function switchButtonOff() {
-      buttonElement.setAttribute("disabled", "");
-      buttonElement.backgroundColor = "#555";
+        buttonElement.setAttribute("disabled", "");
+        buttonElement.backgroundColor = "#555";
     }
 
     function switchDeleteButtonOn() {
-      deleteLastButtonElement.removeAttribute("disabled");
-      deleteLastButtonElement.backgroundColor = "#bcec30";
+        deleteLastButtonElement.removeAttribute("disabled");
+        deleteLastButtonElement.backgroundColor = "#bcec30";
     }
 
     function switchDeleteButtonOff() {
-      deleteLastButtonElement.setAttribute("disabled", "");
-      deleteLastButtonElement.backgroundColor = "#555";
+        deleteLastButtonElement.setAttribute("disabled", "");
+        deleteLastButtonElement.backgroundColor = "#555";
     }
 
-  </script>
+    function addAllEventListenersOnInputForm() {
+
+        userName.addEventListener("input", () => {
+            // Enter key processing (deleting from the string)
+            const charArray = userName.value.split("");
+            if (charArray[charArray.length - 1] === "\n") {
+                charArray.pop();
+                if (charArray[charArray.length - 1] === "\r") {
+                    charArray.pop()
+                }
+                userName.value = charArray.join("");
+            }
+            userNameIsNotNull = userName.value !== "";
+            if (userNameIsNotNull && userCommentIsNotNull) {
+                switchButtonOn();
+            } else {
+                switchButtonOff();
+            }
+        });
+
+        userComment.addEventListener("input", () => {
+            // Enter key processing (deleting from the string)
+            const charArray = userComment.value.split("");
+            if (charArray[charArray.length - 1] === "\n") {
+                charArray.pop();
+                if (charArray[charArray.length - 1] === "\r") {
+                    charArray.pop()
+                }
+                userComment.value = charArray.join("");
+            }
+            userCommentIsNotNull = userComment.value !== "";
+            if (userNameIsNotNull && userCommentIsNotNull) {
+                switchButtonOn();
+            } else {
+                switchButtonOff();
+            }
+        });
+
+        buttonElement.addEventListener("click", () => {
+            addComment();
+        });
+
+        inputForm.addEventListener('keyup', (e) => {
+            if (e.code === "Enter" && userNameIsNotNull && userCommentIsNotNull && userName.value !== "" && userComment.value !== "") {
+                addComment();
+            }
+        });
+
+        deleteLastButtonElement.addEventListener('click', () => {
+            if (commentsArray.length > 1) {
+                commentsArray.pop();
+            } else if (commentsArray.length === 1) {
+                commentsArray.pop();
+                switchDeleteButtonOff();
+            }
+        });
+    }
+
+</script>
 </html>
