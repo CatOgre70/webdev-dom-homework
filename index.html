@@ -51,13 +51,6 @@
     //  ]
     // }
 
-    let commentsArray = [];
-    fetchAndRenderCommentList();
-
-    const intToTwoCharString = (a) => {
-      return a < 10 ? `0${a}` : String(a);
-    }
-
     const buttonElement = document.getElementById("add-button");
     const deleteLastButtonElement = document.getElementById("delete-last-button");
     const commentsList = document.getElementById("comments-list");
@@ -67,85 +60,10 @@
     let userNameIsNotNull = false;
     let userCommentIsNotNull = false;
 
-    const initLikeButtonListeners = () => {
-      const likeButtonsList = document.querySelectorAll(".like-button");
-      for(const likeButton of likeButtonsList) {
-        likeButton.addEventListener('click', (event) => {
-          event.stopPropagation();
-          if(commentsArray[likeButton.dataset.index].isLiked) {
-            commentsArray[likeButton.dataset.index].isLiked = false;
-            commentsArray[likeButton.dataset.index].likes--;
-          } else {
-            commentsArray[likeButton.dataset.index].myLike = true;
-            commentsArray[likeButton.dataset.index].likes++;
-          }
-          renderCommentList();
-        });
-      }
-    };
-
-    const initCommentOnCommentListeners = () => {
-      const commentsList = document.querySelectorAll(".comment");
-      for (const comment of commentsList) {
-        comment.addEventListener('click', () => {
-          const previousCommentUserName = `AUTHOR_BEGIN${commentsArray[comment.dataset.index].name}AUTHOR_END`;
-          const previousCommentText = commentsArray[comment.dataset.index].text;
-          userName.value = "";
-          userComment.value = `QUOTE_BEGIN${previousCommentUserName}\n${previousCommentText}QUOTE_END\n`;
-        });
-      }
-    }
-
-    function renderCommentList() {
-      commentsList.innerHTML = commentsArray.map((comment, index) => {
-        comment.text = comment.text.replaceAll("QUOTE_BEGIN", "<div class = 'quote'>");
-        comment.text = comment.text.replaceAll("QUOTE_END", "</div>")
-        comment.text = comment.text.replaceAll("AUTHOR_BEGIN", "<b>");
-        comment.text = comment.text.replaceAll("AUTHOR_END", "</b><br>")
-        return `<li class="comment" data-index="${index}">
-                  <div class="comment-header">
-                    <div>${comment.author.name}</div>
-                    <div>${dateToString(comment.date)}</div>
-                  </div>
-                  <div class="comment-body">
-                    <div class="comment-text">
-                      ${comment.text}
-                    </div>
-                  </div>
-                  <div class="comment-footer">
-                    <div class="likes">
-                      <span class="likes-counter">${comment.likes}</span>
-                      <button class="like-button ${comment.isLiked ? "-active-like" : ""}" data-index="${index}"></button>
-                    </div>
-                  </div>
-                </li>`;
-      }).join("");
-      initLikeButtonListeners();
-      initCommentOnCommentListeners();
-    }
-
-    renderCommentList();
-
-
-    const switchButtonOn = () => {
-      buttonElement.removeAttribute("disabled");
-      buttonElement.backgroundColor = "#bcec30";
-    }
-
-    const switchButtonOff = () => {
-      buttonElement.setAttribute("disabled", "");
-      buttonElement.backgroundColor = "#555";
-    }
-
-    const switchDeleteButtonOn = () => {
-      deleteLastButtonElement.removeAttribute("disabled");
-      deleteLastButtonElement.backgroundColor = "#bcec30";
-    }
-
-    const switchDeleteButtonOff = () => {
-      deleteLastButtonElement.setAttribute("disabled", "");
-      deleteLastButtonElement.backgroundColor = "#555";
-    }
+    let commentsArray = [];
+    let firstCommentListFetchAndRender = true;
+    let addingNewComment = false;
+    fetchAndRenderCommentList();
 
     switchButtonOff();
 
@@ -219,6 +137,7 @@
       }).then((response) => {
         return response.json();
       }).then(() => {
+        addingNewComment = true;
         fetchAndRenderCommentList();
       });
 
@@ -242,14 +161,110 @@
     }
 
     function fetchAndRenderCommentList() {
+      let inputFormInnerHTMLOld = inputForm.innerHTML;
+      if(firstCommentListFetchAndRender) {
+        commentsList.innerHTML = '<li class="comment"><div class="comment-body"><div class="comment-text">Идет загрузка комментариев...</div></div></li>';
+      }
+      if(addingNewComment) {
+        inputForm.innerHTML = '<div class="add-form"><div class="comment-text">Идет публикация комментария...</div></div>'
+      }
       return fetch("https://wedev-api.sky.pro/api/v1/vasily-demin/comments", {
         method: "GET"
       }).then((response) => {
-        return response.json()
+        return response.json();
       }).then((responseData) => {
         commentsArray = responseData.comments;
         renderCommentList();
+      }).then(() => {
+        if(firstCommentListFetchAndRender) {
+          firstCommentListFetchAndRender = false;
+        }
+        if(addingNewComment) {
+          inputForm.innerHTML = inputFormInnerHTMLOld;
+          addingNewComment = false;
+        }
       });
+    }
+
+    function renderCommentList() {
+      commentsList.innerHTML = commentsArray.map((comment, index) => {
+        comment.text = comment.text.replaceAll("QUOTE_BEGIN", "<div class = 'quote'>");
+        comment.text = comment.text.replaceAll("QUOTE_END", "</div>")
+        comment.text = comment.text.replaceAll("AUTHOR_BEGIN", "<b>");
+        comment.text = comment.text.replaceAll("AUTHOR_END", "</b><br>")
+        return `<li class="comment" data-index="${index}">
+                  <div class="comment-header">
+                    <div>${comment.author.name}</div>
+                    <div>${dateToString(comment.date)}</div>
+                  </div>
+                  <div class="comment-body">
+                    <div class="comment-text">
+                      ${comment.text}
+                    </div>
+                  </div>
+                  <div class="comment-footer">
+                    <div class="likes">
+                      <span class="likes-counter">${comment.likes}</span>
+                      <button class="like-button ${comment.isLiked ? "-active-like" : ""}" data-index="${index}"></button>
+                    </div>
+                  </div>
+                </li>`;
+      }).join("");
+      initLikeButtonListeners();
+      initCommentOnCommentListeners();
+    }
+
+    function intToTwoCharString(a) {
+      return a < 10 ? `0${a}` : String(a);
+    }
+
+    function initLikeButtonListeners() {
+      const likeButtonsList = document.querySelectorAll(".like-button");
+      for(const likeButton of likeButtonsList) {
+        likeButton.addEventListener('click', (event) => {
+          event.stopPropagation();
+          if(commentsArray[likeButton.dataset.index].isLiked) {
+            commentsArray[likeButton.dataset.index].isLiked = false;
+            commentsArray[likeButton.dataset.index].likes--;
+          } else {
+            commentsArray[likeButton.dataset.index].myLike = true;
+            commentsArray[likeButton.dataset.index].likes++;
+          }
+          renderCommentList();
+        });
+      }
+    }
+
+    function initCommentOnCommentListeners() {
+      const commentsList = document.querySelectorAll(".comment");
+      for (const comment of commentsList) {
+        comment.addEventListener('click', () => {
+          const previousCommentUserName = `AUTHOR_BEGIN${commentsArray[comment.dataset.index].name}AUTHOR_END`;
+          const previousCommentText = commentsArray[comment.dataset.index].text;
+          userName.value = "";
+          userComment.value = `QUOTE_BEGIN${previousCommentUserName}\n${previousCommentText}QUOTE_END\n`;
+        });
+      }
+    }
+
+    function switchButtonOn() {
+      buttonElement.removeAttribute("disabled");
+      buttonElement.backgroundColor = "#bcec30";
+    }
+
+    function switchButtonOff() {
+      buttonElement.setAttribute("disabled", "");
+      buttonElement.backgroundColor = "#555";
+    }
+
+    function switchDeleteButtonOn() {
+      deleteLastButtonElement.removeAttribute("disabled");
+      deleteLastButtonElement.backgroundColor = "#bcec30";
+    }
+
+    function switchDeleteButtonOff() {
+      deleteLastButtonElement.setAttribute("disabled", "");
+      deleteLastButtonElement.backgroundColor = "#555";
     }
 
   </script>
