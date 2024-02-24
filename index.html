@@ -41,7 +41,7 @@
     //    }
     //  ]
     // }
-
+    const baseUrl = "https://wedev-api.sky.pro/api/v1/vasily-demin/comments";
     const buttonElement = document.getElementById("add-button");
     const deleteLastButtonElement = document.getElementById("delete-last-button");
     const commentsList = document.getElementById("comments-list");
@@ -69,7 +69,7 @@
         };
         addingNewComment = true;
         renderInputForm();
-        fetch("https://wedev-api.sky.pro/api/v1/vasily-demin/comments", {
+        fetch(baseUrl, {
             method: "POST",
             body: JSON.stringify(newComment)
         }).then((response) => {
@@ -105,7 +105,7 @@
         if (firstCommentListFetchAndRender) {
             commentsList.innerHTML = '<li class="comment"><div class="comment-body"><div class="comment-text">Идет загрузка комментариев...</div></div></li>';
         }
-        return fetch("https://wedev-api.sky.pro/api/v1/vasily-demin/comments", {
+        return fetch(baseUrl, {
             method: "GET"
         }).then((response) => {
             return response.json();
@@ -192,22 +192,22 @@
 
     function switchButtonOn() {
         buttonElement.removeAttribute("disabled");
-        buttonElement.backgroundColor = "#bcec30";
+        buttonElement.classList.remove("add-form-button_disabled");
     }
 
     function switchButtonOff() {
         buttonElement.setAttribute("disabled", "");
-        buttonElement.backgroundColor = "#555";
+        buttonElement.classList.add("add-form-button_disabled");
     }
 
     function switchDeleteButtonOn() {
         deleteLastButtonElement.removeAttribute("disabled");
-        deleteLastButtonElement.backgroundColor = "#bcec30";
+        deleteLastButtonElement.classList.remove("delete-form-button_disabled");
     }
 
     function switchDeleteButtonOff() {
         deleteLastButtonElement.setAttribute("disabled", "");
-        deleteLastButtonElement.backgroundColor = "#555";
+        deleteLastButtonElement.classList.add("delete-form-button_disabled");
     }
 
     function addAllEventListenersOnInputForm() {

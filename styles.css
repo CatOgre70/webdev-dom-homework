@@ -132,9 +132,13 @@ body {
     cursor: pointer;
   }
 
-.delete-form-button:hover {
-  opacity: 0.9;
-}
+  .delete-form-button:hover {
+    opacity: 0.9;
+  }
+
+  .delete-form-button_disabled {
+    background-color: #555;
+  }
 
   .add-form-button {
     margin-top: 24px;
@@ -148,6 +152,10 @@ body {
 
   .add-form-button:hover {
     opacity: 0.9;
+  }
+
+  .add-form-button_disabled {
+    background-color: #555;
   }
 
   .quote {
