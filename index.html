@@ -52,7 +52,7 @@
     // }
 
     let commentsArray = [];
-    readCommentsArray();
+    fetchAndRenderCommentList();
 
     const intToTwoCharString = (a) => {
       return a < 10 ? `0${a}` : String(a);
@@ -72,8 +72,8 @@
       for(const likeButton of likeButtonsList) {
         likeButton.addEventListener('click', (event) => {
           event.stopPropagation();
-          if(commentsArray[likeButton.dataset.index].myLike) {
-            commentsArray[likeButton.dataset.index].myLike = false;
+          if(commentsArray[likeButton.dataset.index].isLiked) {
+            commentsArray[likeButton.dataset.index].isLiked = false;
             commentsArray[likeButton.dataset.index].likes--;
           } else {
             commentsArray[likeButton.dataset.index].myLike = true;
@@ -89,7 +89,7 @@
       for (const comment of commentsList) {
         comment.addEventListener('click', () => {
           const previousCommentUserName = `AUTHOR_BEGIN${commentsArray[comment.dataset.index].name}AUTHOR_END`;
-          const previousCommentText = commentsArray[comment.dataset.index].comment;
+          const previousCommentText = commentsArray[comment.dataset.index].text;
           userName.value = "";
           userComment.value = `QUOTE_BEGIN${previousCommentUserName}\n${previousCommentText}QUOTE_END\n`;
         });
@@ -217,9 +217,9 @@
         method: "POST",
         body: JSON.stringify(newComment)
       }).then((response) => {
-        response.json().then(() => {
-          readCommentsArray();
-        });
+        return response.json();
+      }).then(() => {
+        fetchAndRenderCommentList();
       });
 
       userName.value = '';
@@ -231,10 +231,6 @@
         switchDeleteButtonOn();
       }
     }
-    function currentDateToString(){
-      const currentDate = new Date();
-      return `${intToTwoCharString(currentDate.getDate())}.${intToTwoCharString(currentDate.getMonth() + 1)}.${intToTwoCharString(currentDate.getFullYear() % 100)} ${intToTwoCharString(currentDate.getHours())}:${intToTwoCharString(currentDate.getMinutes())}`;
-    }
 
     function dateToString(dateString) {
       const date = new Date(Date.parse(dateString));
@@ -245,14 +241,14 @@
       return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
     }
 
-    function readCommentsArray() {
-      fetch("https://wedev-api.sky.pro/api/v1/vasily-demin/comments", {
+    function fetchAndRenderCommentList() {
+      return fetch("https://wedev-api.sky.pro/api/v1/vasily-demin/comments", {
         method: "GET"
       }).then((response) => {
-        response.json().then((responseData) => {
-          commentsArray = responseData.comments;
-          renderCommentList();
-        });
+        return response.json()
+      }).then((responseData) => {
+        commentsArray = responseData.comments;
+        renderCommentList();
       });
     }
 
