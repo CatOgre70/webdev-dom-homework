@@ -37,26 +37,19 @@
     "use strict";
     // Код писать здесь
 
-    const commentsArray = [
-      {
-        name: "Глеб Фокин",
-        comment: "Это будет первый комментарий на этой странице",
-        date: "12.02.22 12:18",
-        likes: 3,
-        myLike: false
-      },
-      {
-        name: "Варвара Н.",
-        comment: "Мне нравится как оформлена эта страница! ❤",
-        date: "13.02.22 19:22",
-        likes: 75,
-        myLike: false
-      }
-    ];
-
-    const intToTwoCharString = (a) => {
-      return a < 10 ? `0${a}` : String(a);
-    }
+    // Список комментариев возвращается из API в следующем виде:
+    // {
+    // "comments": [
+    //    {
+    //      "id": 1,
+    //      "date": "2023-03-10T10:11:23.237Z",
+    //      "likes": 0,
+    //      "isLiked": false,
+    //      "text": "Это мой первый лайк",
+    //      "author": { "name": "Глеб Фокин" }
+    //    }
+    //  ]
+    // }
 
     const buttonElement = document.getElementById("add-button");
     const deleteLastButtonElement = document.getElementById("delete-last-button");
@@ -67,85 +60,10 @@
     let userNameIsNotNull = false;
     let userCommentIsNotNull = false;
 
-    const initLikeButtonListeners = () => {
-      const likeButtonsList = document.querySelectorAll(".like-button");
-      for(const likeButton of likeButtonsList) {
-        likeButton.addEventListener('click', (event) => {
-          event.stopPropagation();
-          if(commentsArray[likeButton.dataset.index].myLike) {
-            commentsArray[likeButton.dataset.index].myLike = false;
-            commentsArray[likeButton.dataset.index].likes--;
-          } else {
-            commentsArray[likeButton.dataset.index].myLike = true;
-            commentsArray[likeButton.dataset.index].likes++;
-          }
-          renderCommentList();
-        });
-      }
-    };
-
-    const initCommentOnCommentListeners = () => {
-      const commentsList = document.querySelectorAll(".comment");
-      for (const comment of commentsList) {
-        comment.addEventListener('click', () => {
-          const previousCommentUserName = `AUTHOR_BEGIN${commentsArray[comment.dataset.index].name}AUTHOR_END`;
-          const previousCommentText = commentsArray[comment.dataset.index].comment;
-          userName.value = "";
-          userComment.value = `QUOTE_BEGIN${previousCommentUserName}\n${previousCommentText}QUOTE_END\n`;
-        });
-      }
-    }
-
-    function renderCommentList() {
-      commentsList.innerHTML = commentsArray.map((comment, index) => {
-        comment.comment = comment.comment.replaceAll("QUOTE_BEGIN", "<div class = 'quote'>");
-        comment.comment = comment.comment.replaceAll("QUOTE_END", "</div>")
-        comment.comment = comment.comment.replaceAll("AUTHOR_BEGIN", "<b>");
-        comment.comment = comment.comment.replaceAll("AUTHOR_END", "</b><br>")
-        return `<li class="comment" data-index="${index}">
-                  <div class="comment-header">
-                    <div>${comment.name}</div>
-                    <div>${comment.date}</div>
-                  </div>
-                  <div class="comment-body">
-                    <div class="comment-text">
-                      ${comment.comment}
-                    </div>
-                  </div>
-                  <div class="comment-footer">
-                    <div class="likes">
-                      <span class="likes-counter">${comment.likes}</span>
-                      <button class="like-button ${comment.myLike ? "-active-like" : ""}" data-index="${index}"></button>
-                    </div>
-                  </div>
-                </li>`;
-      }).join("");
-      initLikeButtonListeners();
-      initCommentOnCommentListeners();
-    }
-
-    renderCommentList();
-
-
-    const switchButtonOn = () => {
-      buttonElement.removeAttribute("disabled");
-      buttonElement.backgroundColor = "#bcec30";
-    }
-
-    const switchButtonOff = () => {
-      buttonElement.setAttribute("disabled", "");
-      buttonElement.backgroundColor = "#555";
-    }
-
-    const switchDeleteButtonOn = () => {
-      deleteLastButtonElement.removeAttribute("disabled");
-      deleteLastButtonElement.backgroundColor = "#bcec30";
-    }
-
-    const switchDeleteButtonOff = () => {
-      deleteLastButtonElement.setAttribute("disabled", "");
-      deleteLastButtonElement.backgroundColor = "#555";
-    }
+    let commentsArray = [];
+    let firstCommentListFetchAndRender = true;
+    let addingNewComment = false;
+    fetchAndRenderCommentList();
 
     switchButtonOff();
 
@@ -208,27 +126,20 @@
     console.log("It works!");
 
     function addComment() {
-      const currentDate = new Date();
-      const dateAndTime = `${intToTwoCharString(currentDate.getDate())}.${intToTwoCharString(currentDate.getMonth() + 1)}.${intToTwoCharString(currentDate.getFullYear() % 100)} ${intToTwoCharString(currentDate.getHours())}:${intToTwoCharString(currentDate.getMinutes())}`;
-      const likesCounter = 0;
+      const newComment = {
+        text: validateString(userComment.value),
+        name: validateString(userName.value)
+      };
 
-      commentsArray.push({
-        name: userName.value
-                .replaceAll("&", "&amp;")
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;")
-                .replaceAll('"', "&quot;"),
-        comment: userComment.value
-                .replaceAll("&", "&amp;")
-                .replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;")
-                .replaceAll('"', "&quot;"),
-        date: dateAndTime,
-        likes: likesCounter,
-        myLike: false
+      fetch("https://wedev-api.sky.pro/api/v1/vasily-demin/comments", {
+        method: "POST",
+        body: JSON.stringify(newComment)
+      }).then((response) => {
+        return response.json();
+      }).then(() => {
+        addingNewComment = true;
+        fetchAndRenderCommentList();
       });
-
-      renderCommentList();
 
       userName.value = '';
       userComment.value = '';
@@ -239,5 +150,122 @@
         switchDeleteButtonOn();
       }
     }
+
+    function dateToString(dateString) {
+      const date = new Date(Date.parse(dateString));
+      return `${intToTwoCharString(date.getDate())}.${intToTwoCharString(date.getMonth() + 1)}.${intToTwoCharString(date.getFullYear() % 100)} ${intToTwoCharString(date.getHours())}:${intToTwoCharString(date.getMinutes())}`;
+    }
+
+    function validateString(str) {
+      return str.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+    }
+
+    function fetchAndRenderCommentList() {
+      let inputFormInnerHTMLOld = inputForm.innerHTML;
+      if(firstCommentListFetchAndRender) {
+        commentsList.innerHTML = '<li class="comment"><div class="comment-body"><div class="comment-text">Идет загрузка комментариев...</div></div></li>';
+      }
+      if(addingNewComment) {
+        inputForm.innerHTML = '<div class="add-form"><div class="comment-text">Идет публикация комментария...</div></div>'
+      }
+      return fetch("https://wedev-api.sky.pro/api/v1/vasily-demin/comments", {
+        method: "GET"
+      }).then((response) => {
+        return response.json();
+      }).then((responseData) => {
+        commentsArray = responseData.comments;
+        renderCommentList();
+      }).then(() => {
+        if(firstCommentListFetchAndRender) {
+          firstCommentListFetchAndRender = false;
+        }
+        if(addingNewComment) {
+          inputForm.innerHTML = inputFormInnerHTMLOld;
+          addingNewComment = false;
+        }
+      });
+    }
+
+    function renderCommentList() {
+      commentsList.innerHTML = commentsArray.map((comment, index) => {
+        comment.text = comment.text.replaceAll("QUOTE_BEGIN", "<div class = 'quote'>");
+        comment.text = comment.text.replaceAll("QUOTE_END", "</div>")
+        comment.text = comment.text.replaceAll("AUTHOR_BEGIN", "<b>");
+        comment.text = comment.text.replaceAll("AUTHOR_END", "</b><br>")
+        return `<li class="comment" data-index="${index}">
+                  <div class="comment-header">
+                    <div>${comment.author.name}</div>
+                    <div>${dateToString(comment.date)}</div>
+                  </div>
+                  <div class="comment-body">
+                    <div class="comment-text">
+                      ${comment.text}
+                    </div>
+                  </div>
+                  <div class="comment-footer">
+                    <div class="likes">
+                      <span class="likes-counter">${comment.likes}</span>
+                      <button class="like-button ${comment.isLiked ? "-active-like" : ""}" data-index="${index}"></button>
+                    </div>
+                  </div>
+                </li>`;
+      }).join("");
+      initLikeButtonListeners();
+      initCommentOnCommentListeners();
+    }
+
+    function intToTwoCharString(a) {
+      return a < 10 ? `0${a}` : String(a);
+    }
+
+    function initLikeButtonListeners() {
+      const likeButtonsList = document.querySelectorAll(".like-button");
+      for(const likeButton of likeButtonsList) {
+        likeButton.addEventListener('click', (event) => {
+          event.stopPropagation();
+          if(commentsArray[likeButton.dataset.index].isLiked) {
+            commentsArray[likeButton.dataset.index].isLiked = false;
+            commentsArray[likeButton.dataset.index].likes--;
+          } else {
+            commentsArray[likeButton.dataset.index].myLike = true;
+            commentsArray[likeButton.dataset.index].likes++;
+          }
+          renderCommentList();
+        });
+      }
+    }
+
+    function initCommentOnCommentListeners() {
+      const commentsList = document.querySelectorAll(".comment");
+      for (const comment of commentsList) {
+        comment.addEventListener('click', () => {
+          const previousCommentUserName = `AUTHOR_BEGIN${commentsArray[comment.dataset.index].name}AUTHOR_END`;
+          const previousCommentText = commentsArray[comment.dataset.index].text;
+          userName.value = "";
+          userComment.value = `QUOTE_BEGIN${previousCommentUserName}\n${previousCommentText}QUOTE_END\n`;
+        });
+      }
+    }
+
+    function switchButtonOn() {
+      buttonElement.removeAttribute("disabled");
+      buttonElement.backgroundColor = "#bcec30";
+    }
+
+    function switchButtonOff() {
+      buttonElement.setAttribute("disabled", "");
+      buttonElement.backgroundColor = "#555";
+    }
+
+    function switchDeleteButtonOn() {
+      deleteLastButtonElement.removeAttribute("disabled");
+      deleteLastButtonElement.backgroundColor = "#bcec30";
+    }
+
+    function switchDeleteButtonOff() {
+      deleteLastButtonElement.setAttribute("disabled", "");
+      deleteLastButtonElement.backgroundColor = "#555";
+    }
+
   </script>
 </html>
