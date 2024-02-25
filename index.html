@@ -11,7 +11,7 @@
     <ul class="comments" id="comments-list">
         <!--        Список рендерится из JS-->
     </ul>
-    <div class="add-form" id="error-message-box">
+    <div class="add-form error-message" id="error-message-box">
         <!--        Сообщение об ошибке рендерится из JS-->
     </div>
     <div class="add-form" id="input-form">
@@ -52,6 +52,7 @@
     const progressBar = document.getElementById("adding-comment-progress");
     const userName = document.getElementById("user-name");
     const userComment = document.getElementById("user-comment");
+    const errorMessageBox = document.querySelector(".error-message");
     let userNameIsNotNull = false;
     let userCommentIsNotNull = false;
     let commentsArray = [];
@@ -59,9 +60,10 @@
 
     fetchAndRenderCommentList();
     let addingNewComment = false;
-    displayOnOfInputForm();
+    displayOnOffInputForm();
     addAllEventListenersOnInputForm();
     switchButtonOff();
+    // renderAndSwitchOnErrorMessageBox("Test");
 
     console.log("It works!");
 
@@ -71,7 +73,7 @@
             name: validateString(userName.value)
         };
         addingNewComment = true;
-        displayOnOfInputForm();
+        displayOnOffInputForm();
         fetch(baseUrl, {
             method: "POST",
             body: JSON.stringify(newComment)
@@ -81,7 +83,7 @@
             return fetchAndRenderCommentList();
         }).then(() => {
             addingNewComment = false;
-            displayOnOfInputForm();
+            displayOnOffInputForm();
             userName.value = '';
             userComment.value = '';
             userNameIsNotNull = false;
@@ -150,7 +152,7 @@
         initCommentOnCommentListeners();
     }
 
-    function displayOnOfInputForm() {
+    function displayOnOffInputForm() {
         if (addingNewComment) {
             inputForm.style.display = "none";
             progressBar.style.display = "flex";
@@ -275,6 +277,15 @@
             }
             renderCommentList();
         });
+    }
+
+    function renderAndSwitchOnErrorMessageBox(message) {
+        errorMessageBox.innerHTML = `<div class="comment-text">✕ ${message}</div>`
+        errorMessageBox.style.display = "flex";
+    }
+
+    function switchOffErrorMessageBox(){
+        errorMessageBox.style.display = "none";
     }
 
 </script>
