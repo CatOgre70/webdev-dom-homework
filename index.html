@@ -56,7 +56,7 @@
 
     fetchAndRenderCommentList();
     let addingNewComment = false;
-    renderInputForm();
+    displayOnOfInputForm();
     addAllEventListenersOnInputForm();
     switchButtonOff();
 
@@ -68,7 +68,7 @@
             name: validateString(userName.value)
         };
         addingNewComment = true;
-        renderInputForm();
+        displayOnOfInputForm();
         fetch(baseUrl, {
             method: "POST",
             body: JSON.stringify(newComment)
@@ -78,7 +78,7 @@
             return fetchAndRenderCommentList();
         }).then(() => {
             addingNewComment = false;
-            renderInputForm();
+            displayOnOfInputForm();
             userName.value = '';
             userComment.value = '';
             userNameIsNotNull = false;
@@ -147,7 +147,7 @@
         initCommentOnCommentListeners();
     }
 
-    function renderInputForm() {
+    function displayOnOfInputForm() {
         if (addingNewComment) {
             inputForm.style.display = "none";
             progressBar.style.display = "flex";
@@ -182,8 +182,13 @@
         const commentsList = document.querySelectorAll(".comment");
         for (const comment of commentsList) {
             comment.addEventListener('click', () => {
-                const previousCommentUserName = `AUTHOR_BEGIN${commentsArray[comment.dataset.index].name}AUTHOR_END`;
-                const previousCommentText = commentsArray[comment.dataset.index].text;
+                const previousCommentUserName = `AUTHOR_BEGIN${commentsArray[comment.dataset.index].author.name}AUTHOR_END`;
+                let previousCommentText = commentsArray[comment.dataset.index].text;
+                // Delete previous citation, if exists
+                if(previousCommentText.startsWith("<div class = \'quote\'>")) {
+                    const lastIndexOfCitation = previousCommentText.lastIndexOf("</div>");
+                    previousCommentText = previousCommentText.substring(lastIndexOfCitation + 7);
+                }
                 userName.value = "";
                 userComment.value = `QUOTE_BEGIN${previousCommentUserName}\n${previousCommentText}QUOTE_END\n`;
             });
