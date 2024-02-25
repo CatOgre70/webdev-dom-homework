@@ -57,6 +57,7 @@
     let userCommentIsNotNull = false;
     let commentsArray = [];
     let firstCommentListFetchAndRender = true;
+    let responseStatus = 0;
 
     fetchAndRenderCommentList();
     let addingNewComment = false;
@@ -65,19 +66,31 @@
     switchButtonOff();
     // renderAndSwitchOnErrorMessageBox("Test");
 
-    console.log("It works!");
+    // console.log("It works!");
 
     function addComment() {
         const newComment = {
             text: validateString(userComment.value),
             name: validateString(userName.value)
         };
+        responseStatus = 0;
+        switchOffErrorMessageBox();
         addingNewComment = true;
         displayOnOffInputForm();
         fetch(baseUrl, {
             method: "POST",
             body: JSON.stringify(newComment)
         }).then((response) => {
+            if(response.status === 400) {
+                responseStatus = 400;
+                throw new Error("Response status 400");
+            } else if(response.status >= 500 && response.status < 600) {
+                responseStatus = 500;
+                throw new Error("Response status 500-599");
+            } else if(response.status !== 200 && response.status !== 201) {
+                responseStatus = -1;
+                throw new Error("Unknown error");
+            }
             return response.json();
         }).then(() => {
             return fetchAndRenderCommentList();
@@ -92,8 +105,17 @@
             if (commentsList.childElementCount === 1) {
                 switchDeleteButtonOn();
             }
+        }).catch(() => {
+            if(responseStatus === 400){
+                renderAndSwitchOnErrorMessageBox("Слишком короткие имя или комментарий, они должны быть минимум 3 символа!");
+            } else if(responseStatus === 500){
+                renderAndSwitchOnErrorMessageBox("Внутренняя ошибка сервера, попробуйте, пожалуйста, позже!");
+            } else {
+                renderAndSwitchOnErrorMessageBox("Неизвестная ошибка, попробуйте, пожалуйста, позже!");
+            }
+            addingNewComment = false;
+            displayOnOffInputForm();
         });
-
     }
 
     function dateToString(dateString) {
@@ -113,6 +135,13 @@
         return fetch(baseUrl, {
             method: "GET"
         }).then((response) => {
+            if(response.status === 400) {
+                throw new Error("Response status 400");
+            } else if(response.status >= 500 && response.status < 600) {
+                throw new Error("Response status 500-599");
+            } else if(response.status !== 200 && response.status !== 201) {
+                throw new Error("Unknown error");
+            }
             return response.json();
         }).then((responseData) => {
             commentsArray = responseData.comments;
