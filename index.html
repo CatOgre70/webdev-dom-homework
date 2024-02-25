@@ -11,6 +11,9 @@
     <ul class="comments" id="comments-list">
         <!--        Список рендерится из JS-->
     </ul>
+    <div class="add-form" id="error-message-box">
+        <!--        Сообщение об ошибке рендерится из JS-->
+    </div>
     <div class="add-form" id="input-form">
         <input type="text" class="add-form-name" id="user-name" placeholder="Введите ваше имя"/>
         <textarea type="textarea" class="add-form-text" id="user-comment" placeholder="Введите ваш коментарий" rows="4"></textarea>
@@ -270,6 +273,7 @@
                 commentsArray.pop();
                 switchDeleteButtonOff();
             }
+            renderCommentList();
         });
     }
 
