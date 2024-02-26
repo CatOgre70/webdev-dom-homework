@@ -89,7 +89,7 @@ export function addComment() {
         } else if(responseStatus === 500){
             renderAndSwitchOnErrorMessageBox(errorMessageBox,"Внутренняя ошибка сервера, попробуйте, пожалуйста, позже!");
         } else {
-            renderAndSwitchOnErrorMessageBox(errorMessageBox, "Неизвестная ошибка, попробуйте, пожалуйста, позже!");
+            renderAndSwitchOnErrorMessageBox(errorMessageBox, "Кажется, у вас сломался интернет, попробуйте, пожалуйста, позже!");
         }
         addingNewComment = false;
         displayOnOffInputForm(inputForm, progressBar, addingNewComment);
