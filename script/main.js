@@ -23,12 +23,11 @@ import {renderCommentList} from "./render-functions.js";
 import {addAllEventListenersOnInputForm} from "./listeners.js";
 import {errorMessageDisplay, responseCodeProcessing} from "./responseCodeProcessing.js";
 
-const baseUrl = "https://wedev-api.sky.pro/api/v1/vasily-demin/comments";
-const buttonElement = document.getElementById("add-button");
-const deleteLastButtonElement = document.getElementById("delete-last-button");
+export const buttonElement = document.getElementById("add-button");
+export const deleteLastButtonElement = document.getElementById("delete-last-button");
 const commentsList = document.getElementById("comments-list");
-const inputForm = document.getElementById("input-form");
-const progressBar = document.getElementById("adding-comment-progress");
+export const inputForm = document.getElementById("input-form");
+export const progressBar = document.getElementById("adding-comment-progress");
 const userName = document.getElementById("user-name");
 const userComment = document.getElementById("user-comment");
 export const errorMessageBox = document.querySelector(".error-message");
@@ -45,7 +44,12 @@ export function setResponseStatus(statusCode) {
 }
 
 fetchAndRenderCommentList();
-let addingNewComment = false;
+export let addingNewComment = false;
+
+export function setAddingNewComment(isAdding) {
+    addingNewComment = isAdding;
+}
+
 displayOnOffInputForm(inputForm, progressBar, addingNewComment);
 addAllEventListenersOnInputForm(userName, userComment, buttonElement, deleteLastButtonElement,
     inputForm, commentsArray, commentsList, userFieldsStatus);
@@ -91,7 +95,7 @@ function fetchAndRenderCommentList() {
     if (firstCommentListFetchAndRender) {
         commentsList.innerHTML = '<li class="comment"><div class="comment-body"><div class="comment-text">Идет загрузка комментариев...</div></div></li>';
     }
-    return getCommentList(baseUrl).then((response) => {
+    return getCommentList().then((response) => {
         responseCodeProcessing(response);
         return response.json();
     }).then((responseData) => {
