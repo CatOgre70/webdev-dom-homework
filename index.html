@@ -5,27 +5,11 @@
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="styles.css"/>
 </head>
-
 <body>
-<div class="container">
-    <ul class="comments" id="comments-list">
-        <!--        Список рендерится из JS-->
-    </ul>
-    <div class="add-form error-message" id="error-message-box">
-        <!--        Сообщение об ошибке рендерится из JS-->
-    </div>
-    <div class="add-form" id="input-form">
-        <input type="text" class="add-form-name" id="user-name" placeholder="Введите ваше имя"/>
-        <textarea type="textarea" class="add-form-text" id="user-comment" placeholder="Введите ваш коментарий" rows="4"></textarea>
-        <div class="add-form-row">
-            <button class="delete-form-button" id="delete-last-button">Удалить последний комментарий</button>
-            <button class="add-form-button" id="add-button">Написать</button>
-        </div>
-    </div>
-    <div class="add-form" id="adding-comment-progress">
-        <div class="comment-text">Комментарий добавляется...</div>
-    </div>
-</div>
+    <header class="header-container">
+<!--        Строка меню генериться в JS-->
+    </header>
+    <div class="container" id="app"></div>
+    <script type="module" src="script/main.js"></script>
 </body>
-<script type="module" src="script/main.js"></script>
 </html>
