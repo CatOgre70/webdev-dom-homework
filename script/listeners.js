@@ -1,8 +1,10 @@
 import {renderCommentList} from "./render-functions.js";
-import {switchButtonOff, switchButtonOn, switchDeleteButtonOff} from "./input-form-functions.js";
-import {addComment} from "./main.js";
+import {switchButtonOff, switchButtonOn} from "./input-form-functions.js";
+import {addComment} from "./addComment.js";
+import {userComment, userName} from "./renderApp.js";
+import {commentsArray} from "./globalvars.js";
 
-export function initLikeButtonListeners(commentsList, commentsArray, userName, userComment) {
+export function initLikeButtonListeners(commentsList) {
     const likeButtonsList = document.querySelectorAll(".like-button");
     for (const likeButton of likeButtonsList) {
         likeButton.addEventListener('click', (event) => {
@@ -36,26 +38,9 @@ export function initCommentOnCommentListeners(commentsArray, userName, userComme
     }
 }
 
-export function addAllEventListenersOnInputForm(userName, userComment, buttonElement, deleteLastButtonElement,
-                                                inputForm, commentsArray, commentsList, userFieldsStatus) {
-
-    userName.addEventListener("input", () => {
-        // Enter key processing (deleting from the string)
-        const charArray = userName.value.split("");
-        if (charArray[charArray.length - 1] === "\n") {
-            charArray.pop();
-            if (charArray[charArray.length - 1] === "\r") {
-                charArray.pop()
-            }
-            userName.value = charArray.join("");
-        }
-        userFieldsStatus.userNameIsNotNull = userName.value !== "";
-        if (userFieldsStatus.userNameIsNotNull && userFieldsStatus.userCommentIsNotNull) {
-            switchButtonOn(buttonElement);
-        } else {
-            switchButtonOff(buttonElement);
-        }
-    });
+export function addAllEventListenersOnInputForm(userFieldsStatus) {
+    const buttonElement = document.getElementById("add-button");
+    const inputForm = document.getElementById("input-form");
 
     userComment.addEventListener("input", () => {
         // Enter key processing (deleting from the string)
@@ -85,14 +70,5 @@ export function addAllEventListenersOnInputForm(userName, userComment, buttonEle
         }
     });
 
-    deleteLastButtonElement.addEventListener('click', () => {
-        if (commentsArray.length > 1) {
-            commentsArray.pop();
-        } else if (commentsArray.length === 1) {
-            commentsArray.pop();
-            switchDeleteButtonOff(deleteLastButtonElement);
-        }
-        renderCommentList(commentsList, commentsArray, userName, userComment);
-    });
 }
 
