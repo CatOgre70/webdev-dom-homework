@@ -4,11 +4,15 @@
   "description": "Sky.Pro Student Project for Comments",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "webpack --mode development --watch"
   },
   "author": "Vasily Demin",
   "license": "ISC",
   "dependencies": {
     "date-fns": "^3.4.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
   }
 }
