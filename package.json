@@ -1,0 +1,14 @@
+{
+  "name": "webdev-dom-homework",
+  "version": "1.0.0",
+  "description": "Sky.Pro Student Project for Comments",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vasily Demin",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^3.4.0"
+  }
+}
