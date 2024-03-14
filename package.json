@@ -1,0 +1,18 @@
+{
+  "name": "webdev-dom-homework",
+  "version": "1.0.0",
+  "description": "Sky.Pro Student Project for Comments",
+  "main": "main.js",
+  "scripts": {
+    "dev": "webpack --mode development --watch"
+  },
+  "author": "Vasily Demin",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "^3.4.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4"
+  }
+}
